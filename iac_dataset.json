@@ -1,0 +1,82 @@
+[
+  {
+    "id": 1,
+    "language": "terraform",
+    "iac_snippet": "resource \"aws_s3_bucket\" \"example\" {}",
+    "issue_type": "security",
+    "is_valid": false,
+    "expected_output": "S3 bucket should have server-side encryption enabled."
+  },
+  {
+    "id": 2,
+    "language": "terraform",
+    "iac_snippet": "resource \"aws_iam_role\" \"test\" { name = \"role\" assume_role_policy = \"{}\" }",
+    "issue_type": "security",
+    "is_valid": false,
+    "expected_output": "IAM assume_role_policy is empty or invalid."
+  },
+  {
+    "id": 3,
+    "language": "terraform",
+    "iac_snippet": "resource \"aws_instance\" \"ok\" { ami = \"ami-123\" instance_type = \"t2.micro\" }",
+    "issue_type": "none",
+    "is_valid": true,
+    "expected_output": "No issues found."
+  },
+  {
+    "id": 4,
+    "language": "cloudformation",
+    "iac_snippet": "Resources: MyBucket: Type: AWS::S3::Bucket",
+    "issue_type": "security",
+    "is_valid": false,
+    "expected_output": "S3 bucket missing encryption configuration."
+  },
+  {
+    "id": 5,
+    "language": "cloudformation",
+    "iac_snippet": "Resources: MyLogGroup: Type: AWS::Logs::LogGroup Properties: RetentionInDays: 30",
+    "issue_type": "none",
+    "is_valid": true,
+    "expected_output": "No issues found."
+  },
+  {
+    "id": 6,
+    "language": "kubernetes",
+    "iac_snippet": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: insecure-pod\nspec:\n  containers:\n    - name: test\n      image: nginx:latest",
+    "issue_type": "security",
+    "is_valid": false,
+    "expected_output": "Avoid using 'latest' tag for container images."
+  },
+  {
+    "id": 7,
+    "language": "kubernetes",
+    "iac_snippet": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: safe-pod\nspec:\n  containers:\n    - name: test\n      image: nginx:1.25.1",
+    "issue_type": "none",
+    "is_valid": true,
+    "expected_output": "No issues found."
+  },
+  {
+    "id": 8,
+    "language": "kubernetes",
+    "iac_snippet": "apiVersion: apps/v1\nkind: Deployment\nspec: {}",
+    "issue_type": "syntax",
+    "is_valid": false,
+    "expected_output": "Deployment spec is incomplete. 'selector' and 'template' fields are required."
+  },
+  {
+    "id": 9,
+    "language": "ansible",
+    "iac_snippet": "- name: Copy file\n  copy:\n    src: file.txt\n    dest: /tmp/",
+    "issue_type": "none",
+    "is_valid": true,
+    "expected_output": "No issues found."
+  },
+  {
+    "id": 10,
+    "language": "ansible",
+    "iac_snippet": "- name: Wrong indentation\ncopy:\nsrc: a\ndest: b",
+    "issue_type": "syntax",
+    "is_valid": false,
+    "expected_output": "Indentation error in YAML."
+  }
+]
